@@ -2,6 +2,11 @@ import * as THREE from 'three';
 import morieVertexShader from './shaders/Morie/vertex.glsl';
 import morieFragmentShader from './shaders/Morie/fragment.glsl';
 
+const textureLoader = new THREE.TextureLoader();
+const nameTexture = textureLoader.load('/name.webp');
+nameTexture.wrapS = THREE.RepeatWrapping;
+nameTexture.wrapT = THREE.RepeatWrapping;
+
 const canvas = document.querySelector('canvas.webgl');
 const scene = new THREE.Scene();
 
@@ -45,6 +50,7 @@ const material = new THREE.ShaderMaterial({
     vertexShader: morieVertexShader,
     fragmentShader: morieFragmentShader,
     uniforms: {
+	uNameTexture: new THREE.Uniform(nameTexture),
         uCursor: new THREE.Uniform(cursor),
     },
     transparent: true,
@@ -55,10 +61,10 @@ scene.add(plane1);
 const plane2 = new THREE.Mesh(geometry, material);
 scene.add(plane2);
 
+const speed = 0.001;
 const tick = () => {
     renderer.render(scene, camera);
-    plane1.position.x = -cursor.x;
-    plane2.position.x = cursor.x;
+    plane2.position.x += speed;
     window.requestAnimationFrame(tick);
 };
 tick();
